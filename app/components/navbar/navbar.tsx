@@ -43,7 +43,7 @@ const NavBar = () => {
             height: "200px",
           }}
         >
-          <LinkButton href="../calendar" as="../calendar" text="Calendar" />
+          <LinkButton href="../" as="../" text="Calendar" />
           <LinkButton href="../community" as="../community" text="Community" />
         </div>
       </div>

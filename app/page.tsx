@@ -1,15 +1,19 @@
-import Image from "next/image";
-import TopBar from "./components/Topbar";
-import GettyImages from "./public/GettyImages.jpg";
+import "react-calendar/dist/Calendar.css";
+import CalendarComponent from "./components/calendar/calendar";
 
-export default function Home() {
+const MainPage = () => {
   return (
-    <>
-      <form></form>
-
-      <div>
-        {/* <Image src={GettyImages} alt="GettyImages" layout="fill" objectFit="cover" /> */}
-      </div>
-    </>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        margin: "0 auto",
+      }}
+    >
+      <h1>Calendar</h1>
+      <CalendarComponent />
+    </div>
   );
-}
+};
+
+export default MainPage;
