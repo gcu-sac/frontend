@@ -1,4 +1,3 @@
-// import TopBar from '../../../component/Topbar';
 // import React from 'react';
 // import Link from 'next/link';
 
@@ -10,7 +9,6 @@
 
 //   return (
 //     <>
-//       <TopBar />
 //       <form style={containerStyle}></form>
 
 //         {post ? (
