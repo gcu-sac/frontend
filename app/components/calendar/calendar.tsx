@@ -36,9 +36,57 @@ const CalendarComponent = () => {
     });
   } 
 
+  // 선택한 일정을 수정할 때 사용할 state
+  const [editEvent, setEditEvent] = useState({
+    scheduleId: "",
+    scheduleName: "",
+    startTime: "",
+    endTime: "",
+    schedulDesc: "",
+    groupId: ""
+  });
+
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
+  // 일정 수정 모달 열기
+  const openEditModal = (schedule: any) => {
+    setEditEvent({
+      scheduleId: schedule.scheduleId,
+      scheduleName: schedule.scheduleName,
+      startTime: schedule.startTime,
+      endTime: schedule.endTime,
+      schedulDesc: schedule.schedulDesc,
+      groupId: schedule.groupId
+    });
+    setIsEditModalOpen(true);
+  };
+  
+
+  // 일정 수정 모달 닫기
+  const closeEditModal = () => {
+    setIsEditModalOpen(false);
+  };
+
+  // 일정 수정 로직
+  const handleEditEvent = (schedule: any) => {
+    // 백엔드로 수정할 일정 정보 보내기
+    console.log("schedule: ", schedule);
+    console.log("editEvent: ", editEvent);
+    axios.put(`/calendar/event/${editEvent.scheduleId}`, editEvent)
+      .then(response => {
+        // 수정 성공 시
+        console.log("Event edited successfully:", response.data);
+        closeEditModal();
+        fetchData(value); // 캘린더 업데이트
+      })
+      .catch(error => {
+        console.error("Error editing event:", error);
+      });
+  };
+
   //일정 추가.
   const handleAddEvent = () => { //새 일정 추가 백엔드로 전송하는 부분
-    axios.post('todo_endpoint', newEvent)
+    axios.post('/calendar/event', newEvent)
       .then(response => {
         // Handle success
         console.log("Event added successfully:", response.data);
@@ -59,7 +107,7 @@ const CalendarComponent = () => {
     // 백엔드로 일정 삭제 요청 보내기
     //scheduleId를 백엔드로 넘김. 백엔드에서는 Id조회해서 해당 데이터 지우면 될듯
     console.log("scheduleId: " + scheduleId);
-    axios.delete(`delete_endpoint/${scheduleId}`)
+    axios.delete(`/calendar/event/${scheduleId}`)
       .then(response => {
         // Handle success
         console.log("Event deleted successfully:", response.data);
@@ -70,7 +118,6 @@ const CalendarComponent = () => {
         console.error("Error deleting event:", error);
       });
   };
-  
 
   const onChange = (date: Date | Date[]) => {
     if (Array.isArray(date)) {
@@ -123,18 +170,27 @@ const CalendarComponent = () => {
       
       console.log("year: ", year);
       console.log("month: ", month);
-      console.log("selected date: ", value); //일자 나오는것 확인 완료. 아래 url을 통해 일정목록 받아오면 이 날짜와 비교해서 화면에 띄우면 될듯.
+      console.log("selected date: ", value);
 
-      const endpoint = `api endpoint?month=${month}&year=${year}`;
+      const endpoint = `/calendar/event?month=${month}&year=${year}`; //월 마다의 일정을 받아옴
       const response = await axios.get(endpoint);
       setData(response.data);
-
-
-
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   };
+
+  const selectedDate = value;
+  const selectedDay = selectedDate.getDate();
+  // const selectedSchedules = data ? data.filter(schedule => {
+  //   const scheduleDate = new Date(schedule.startTime);
+  //   return scheduleDate.getDate() === selectedDay;
+  // }) : [];
+  const selectedSchedules = responseExample.filter(schedule => { //우선 test데이터 쓸 때 이거로 쓰는 중
+    const scheduleDate = new Date(schedule.startTime);
+    return scheduleDate.getDate() === selectedDay;
+  });
+  
 
   return (
     <div>
@@ -142,7 +198,7 @@ const CalendarComponent = () => {
         locale="ko"
         onChange={(value, event) => onChange(value as Date)}
         onActiveStartDateChange={({ activeStartDate }) => {
-          if (activeStartDate instanceof Date) { // 타입 가드를 사용하여 null 체크
+          if (activeStartDate instanceof Date) {
             onMonthChange(activeStartDate);
           }
         }}
@@ -150,7 +206,23 @@ const CalendarComponent = () => {
       />
       <button onClick={openModal}>새 일정</button>
       <div style={{ display: "flex" }}>
-        <ScheduleDisplay selectedDate={value} data={responseExample} handleDeleteEvent={handleDeleteEvent}/>{/*민기 쪽에서 넘어오는거 가능해지면 이거 responseExample을 data로 바꾸면 됨.*/}
+        <div>
+          <h2>{selectedDay}일 일정</h2>
+          {selectedSchedules.length > 0 ? (
+            <ul>
+              {selectedSchedules.map((schedule, index) => (
+                <li key={index}>
+                  {"scheduleName: " + schedule.scheduleName}<br />
+                  {"schedulDesc: " + schedule.schedulDesc}
+                  <button onClick={() => openEditModal(schedule)}>수정</button>
+                  <button onClick={() => handleDeleteEvent(schedule.scheduleId)}>삭제</button>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>일정이 없습니다.</p>
+          )}
+        </div>
       </div>
     
       {isModalOpen && (
@@ -189,7 +261,7 @@ const CalendarComponent = () => {
               </label>
             </div>
             <div style={{ display: 'flex', alignItems: 'center' }}>
-              <label style={{ width: '100px' }}>끝나는 시간:
+            <label style={{ width: '100px' }}>끝나는 시간:
                 <input
                   type="text"
                   name="endTime"
@@ -223,38 +295,67 @@ const CalendarComponent = () => {
         </div>
       )}
 
-    </div>
-  );
-};
+      {isEditModalOpen && (
+        <div className="modal" ref={modalRef}>
+          <div className="modal-content">
+            <span className="close" onClick={closeEditModal}>&times;</span>
+            <h2>일정 수정</h2>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+            <label style={{ width: '100px' }}>일정 이름:
+              <input
+                type="text"
+                name="scheduleName"
+                value={editEvent.scheduleName}
+                onChange={e => setEditEvent({ ...editEvent, scheduleName: e.target.value })}
+              />
+            </label>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <label style={{ width: '100px' }}>시작 시간:
+              <input
+                type="text"
+                name="startTime"
+                value={editEvent.startTime}
+                onChange={e => setEditEvent({ ...editEvent, startTime: e.target.value })}
+              />
+            </label>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <label style={{ width: '100px' }}>끝나는 시간:
+              <input
+                type="text"
+                name="endTime"
+                value={editEvent.endTime}
+                onChange={e => setEditEvent({ ...editEvent, endTime: e.target.value })}
+              />
+            </label>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <label style={{ width: '100px' }}>내용:
+              <input
+                type="text"
+                name="schedulDesc"
+                value={editEvent.schedulDesc}
+                onChange={e => setEditEvent({ ...editEvent, schedulDesc: e.target.value })}
+              />
+            </label>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <label style={{ width: '100px' }}>그룹 ID:
+              <input
+                type="text"
+                name="groupId"
+                value={editEvent.groupId}
+                onChange={e => setEditEvent({ ...editEvent, groupId: e.target.value })}
+              />
+            </label>
+          </div>
 
-const ScheduleDisplay = ({ selectedDate, data, handleDeleteEvent }: { selectedDate: Date | null; data: Array<{ [key: string]: any }> | null; handleDeleteEvent: (scheduleId: number) => void }) => {
-  if (!selectedDate || !data) {
-    return null;
-  }
-
-  const selectedDay = selectedDate.getDate(); //유저가 화면에서 고른 '날짜'를 저장.
-  // 해당 일자와 일치하는 일정 찾기
-  const selectedSchedules = data.filter(schedule => {
-    const scheduleDate = new Date(schedule.startTime);
-    return scheduleDate.getDate() === selectedDay;
-  });
-
-  return (
-    <div>
-      <h2>{selectedDay}일 일정</h2> {/* 일자 출력 */}
-      {selectedSchedules.length > 0 ? (
-        <ul>
-          {selectedSchedules.map((schedule, index) => (
-            <li key={index}>
-            {"scheduleName: " + schedule.scheduleName}<br />
-            {"schedulDesc: " + schedule.schedulDesc}
-            <button onClick={() => handleDeleteEvent(schedule.scheduleId)}>삭제</button>
-          </li>
-          ))}
-        </ul>
-      ) : (
-        <p>일정이 없습니다.</p>
+            <button onClick={handleEditEvent}>일정 수정</button>
+          </div>
+        </div>
       )}
+
     </div>
   );
 };
