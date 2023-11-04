@@ -8,6 +8,8 @@ jobs:
   docker:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v2
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
       - name: Set up Docker Buildx
@@ -17,14 +19,17 @@ jobs:
         with:
           username: '${{ secrets.DOCKERHUB_USERNAME }}'
           password: '${{ secrets.DOCKERHUB_TOKEN }}'
+      - name: get short SHA
+        id: var
+        run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
           push: true
-          tags: 'yhc0818/sac-front:latest'
+          tags: yhc0818/sac-front:latest, yhc0818/sac-front:${{ steps.var.outputs.sha_short }}
       - name: Notify Deployment
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         uses: Ilshidur/action-discord@master
         with:
-          args: 'yhc0818/sac-front:latest updated successfully on Docker Hub.'
+          args: '`frontend` deployed with version `${{ steps.var.outputs.sha_short }}` and `latest`'
