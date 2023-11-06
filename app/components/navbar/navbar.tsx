@@ -6,6 +6,7 @@ import userImage from "../../public/user-profile.png";
 import UserIcon from "../user-icon/user-icon";
 
 const NavBar = () => {
+
   return (
     <UserContextProvider>
       <div
@@ -29,9 +30,9 @@ const NavBar = () => {
         >
           <UserIcon />
           <LinkButton
-            href="../user/login"
+            href="../../user/login"
             as="../user/login"
-            text="Login "
+            text="Login"
             variant="contained"
           />
         </div>
