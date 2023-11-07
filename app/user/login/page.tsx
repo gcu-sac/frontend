@@ -6,20 +6,19 @@ import { Button } from '@mui/material';
 function Page() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [loginMessage, setLoginMessage] = useState(''); // setLoginMessage 상태 정의
 
   const handleLogin = async () => { //로그인 처리를 수행
     try {
-        
+      
         const response = await onGetUser(); // 서버로 로그인 요청을 보내는 부분
         
         if (response.status === 200) {
-          setLoginMessage('로그인 성공!');
+          console.log('로그인 성공!');
           localStorage.jwtAuthToken = response.headers['jwt-auth-token']; // response로 넘어온 jwt-auth-token을 localStorage에 저장
-
+          window.location.href = '../../'; //로그인 완료 후 메인 화면으로 이동
         }
       } catch (error) {
-        setLoginMessage('로그인 실패: ' + error);
+        console.log(error);
       }
   };
 
