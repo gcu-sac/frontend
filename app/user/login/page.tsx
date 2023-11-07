@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from 'react';
 import axios from 'axios';
+import { Button } from '@mui/material';
 
 function Page() {
   const [username, setUsername] = useState('');
@@ -14,6 +15,8 @@ function Page() {
         
         if (response.status === 200) {
           setLoginMessage('로그인 성공!');
+          localStorage.jwtAuthToken = response.headers['jwt-auth-token']; // response로 넘어온 jwt-auth-token을 localStorage에 저장
+
         }
       } catch (error) {
         setLoginMessage('로그인 실패: ' + error);
@@ -22,11 +25,7 @@ function Page() {
 
   const onGetUser = async () => { //jwt서버로 로그인 토큰 정보 보냄
     try{
-        const res = await axios.get('/user/login', {
-            headers: {
-                'jwt-auth-token': localStorage.jwtAuthToken, // localStorage에 저장되어 있던 토큰을 header에 담아서 전송
-            },
-        });
+        const res = await axios.post('https://sac.prod.cluster.yanychoi.site/api/auth/user/login', {"id": username, "password": password});
         return res; //Axios로 실제 서버로부터 응답을 반환
     }catch(error){
         throw error;
@@ -58,20 +57,6 @@ function Page() {
     borderRadius: '5px',
   };
 
-  const buttonStyle = {
-    width: '100%',
-    padding: '10px',
-    backgroundColor: '#007bff',
-    color: '#fff',
-    border: 'none',
-    borderRadius: '5px',
-    cursor: 'pointer',
-  };
-
-  const buttonHoverStyle = {
-    backgroundColor: '#0056b3',
-  };
-
   return (
     <div style={loginContainerStyle}>
       <h1>Login</h1>
@@ -93,14 +78,12 @@ function Page() {
           style={inputStyle}
         />
       </div>
-      <button
+      <Button
         onClick={handleLogin}
-        style={buttonStyle}
-        onMouseEnter={() => buttonStyle.backgroundColor = buttonHoverStyle.backgroundColor}
-        onMouseLeave={() => buttonStyle.backgroundColor = buttonStyle.backgroundColor}
+        variant='contained'
       >
         Log In
-      </button>
+      </Button>
     </div>
   );
 }

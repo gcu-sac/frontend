@@ -4,6 +4,9 @@ import { useState, useEffect, useRef } from "react";
 import "react-calendar/dist/Calendar.css";
 import axios from "axios";
 import { Button, Modal, Paper, TextField } from "@mui/material";
+import InputLabel from '@mui/material/InputLabel';
+import FormControl from '@mui/material/FormControl';
+import NativeSelect from '@mui/material/NativeSelect';
 
 const CalendarComponent = () => {
   const [value, setValue] = useState<Date>(new Date());
@@ -13,10 +16,9 @@ const CalendarComponent = () => {
   const [newEvent, setNewEvent] = useState({
     scheduleId: "",
     scheduleName: "",
-    startTime: "",
-    endTime: "",
+    // startTime: "",
+    // endTime: "",
     schedulDesc: "",
-    groupId: "",
   });
 
   const modalRef = useRef(null);
@@ -41,8 +43,8 @@ const CalendarComponent = () => {
   const [editEvent, setEditEvent] = useState({
     scheduleId: "",
     scheduleName: "",
-    startTime: "",
-    endTime: "",
+    // startTime: "",
+    // endTime: "",
     schedulDesc: "",
     groupId: "",
   });
@@ -54,8 +56,8 @@ const CalendarComponent = () => {
     setEditEvent({
       scheduleId: schedule.scheduleId,
       scheduleName: schedule.scheduleName,
-      startTime: schedule.startTime,
-      endTime: schedule.endTime,
+      // startTime: schedule.startTime,
+      // endTime: schedule.endTime,
       schedulDesc: schedule.schedulDesc,
       groupId: schedule.groupId,
     });
@@ -142,7 +144,6 @@ const CalendarComponent = () => {
       startTime: "2023-12-12T09:00:00",
       endTime: "2023-12-12T10:00:00",
       schedulDesc: "Description 12",
-      groupId: "GroupL",
     },
     {
       scheduleId: 13,
@@ -150,7 +151,6 @@ const CalendarComponent = () => {
       startTime: "2023-12-13T09:00:00",
       endTime: "2023-12-13T10:00:00",
       schedulDesc: "Description 13",
-      groupId: "GroupL",
     },
     {
       scheduleId: 14,
@@ -158,7 +158,6 @@ const CalendarComponent = () => {
       startTime: "2023-12-12T09:00:00",
       endTime: "2023-12-12T10:00:00",
       schedulDesc: "Description 14",
-      groupId: "GroupL",
     },
   ];
 
@@ -194,6 +193,51 @@ const CalendarComponent = () => {
     const scheduleDate = new Date(schedule.startTime);
     return scheduleDate.getDate() === selectedDay;
   });
+
+  const now = new Date();
+  const nowYear = now.getFullYear();
+
+  const [form, setForm] = useState({
+    startYear: nowYear,
+    startMonth: "01",
+    startDay: "01",
+    startTime: "01",
+  });
+  
+  let years = [];
+  for (let y = now.getFullYear(); y >= 1930; y -= 1) {
+    years.push(y);
+  }
+
+  let month = [];
+  for (let m = 1; m <= 12; m += 1) {
+    if (m < 10) {
+      // 날짜가 2자리로 나타나야 했기 때문에 1자리 월에 0을 붙혀준다
+      month.push("0" + m.toString());
+    } else {
+      month.push(m.toString());
+    }
+  }
+  let days = [];
+  let date = new Date(form.startYear, parseInt(form.startMonth), 0).getDate();
+  for (let d = 1; d <= date; d += 1) {
+    if (d < 10) {
+     // 날짜가 2자리로 나타나야 했기 때문에 1자리 일에 0을 붙혀준다
+      days.push("0" + d.toString());
+    } else {
+      days.push(d.toString());
+    }
+  }
+  
+  // let time1 = [];
+  // for(let i = 1; 1<=12; i++){
+  //   if (i < 10) {
+  //     //시간이 2자리로 나타나야 했기 때문에 1자리 시간 앞에 0을 붙혀준다
+  //     time1.push("0" + i.toString());
+  //   } else {
+  //     time1.push(i.toString());
+  //   }
+  // }
 
   return (
     <div>
@@ -288,14 +332,6 @@ const CalendarComponent = () => {
               </span>
               <h2>새 일정 추가</h2>
               <TextField
-                id="scheduleId"
-                label="월"
-                variant="standard"
-                name="scheduleId"
-                value={newEvent.scheduleId}
-                onChange={handleInputChange}
-              />
-              <TextField
                 id="scheduleName"
                 label="일정 이름"
                 variant="standard"
@@ -303,36 +339,80 @@ const CalendarComponent = () => {
                 value={newEvent.scheduleName}
                 onChange={handleInputChange}
               />
-              <TextField
-                id="startTime"
-                label="시작 시간"
-                variant="standard"
-                name="startTime"
-                value={newEvent.startTime}
-                onChange={handleInputChange}
-              />
-              <TextField
-                id="endTime"
-                label="끝나는 시간"
-                variant="standard"
-                name="endTime"
-                value={newEvent.endTime}
-                onChange={handleInputChange}
-              />
+              <FormControl fullWidth style={{display: "flex", flexDirection: "row", justifyContent: "space-around"}}>
+                
+                <InputLabel variant="standard" htmlFor="year">
+                  Year
+                </InputLabel>
+                <NativeSelect
+                  defaultValue={form.startYear}
+                  inputProps={{
+                    name: 'year',
+                    id: 'year',
+                  }}
+                  onChange={(e) => setForm({ ...form, startYear: parseInt(e.target.value) })}
+                >
+                  {years.map((item) => (
+                    <option value={item} key={item}>
+                      {item}
+                    </option>
+                  ))}
+                </NativeSelect>
+                <InputLabel variant="standard" htmlFor="month">
+                  Month
+                </InputLabel>
+                <NativeSelect
+                  defaultValue={form.startMonth}
+                  inputProps={{
+                    name: 'month',
+                    id: 'month',
+                  }}
+                  onChange={(e) => setForm({ ...form, startMonth: e.target.value })}
+                >
+                  {month.map((item) => (
+                    <option value={item} key={item}>
+                      {item}
+                    </option>
+                  ))}
+                </NativeSelect>
+                <InputLabel variant="standard" htmlFor="day">
+                  Day
+                </InputLabel>
+                <NativeSelect
+                  defaultValue={form.startDay}
+                  inputProps={{
+                    name: 'day',
+                    id: 'day',
+                  }}
+                  onChange={(e) => setForm({ ...form, startDay: e.target.value })}
+                >
+                  {days.map((item) => (
+                    <option value={item} key={item}>
+                      {item}
+                    </option>
+                  ))}
+                </NativeSelect>
+                {/* <NativeSelect
+                  defaultValue={form.startTime}
+                  inputProps={{
+                    name: 'time',
+                    id: 'time',
+                  }}
+                  onChange={(e) => setForm({ ...form, startTime: e.target.value })}
+                >
+                  {time1.map((item) => (
+                    <option value={item} key={item}>
+                      {item}
+                    </option>
+                  ))}
+                </NativeSelect> */}
+              </FormControl>
               <TextField
                 id="schedulDesc"
                 label="내용"
                 variant="standard"
                 name="schedulDesc"
                 value={newEvent.schedulDesc}
-                onChange={handleInputChange}
-              />
-              <TextField
-                id="groupId"
-                label="그룹 ID"
-                variant="standard"
-                name="groupId"
-                value={newEvent.groupId}
                 onChange={handleInputChange}
               />
               <Button
@@ -379,16 +459,6 @@ const CalendarComponent = () => {
               </span>
               <h2>일정 수정</h2>
               <TextField
-                id="scheduleId"
-                label="월"
-                variant="standard"
-                name="scheduleId"
-                value={editEvent.scheduleId}
-                onChange={(e) =>
-                  setEditEvent({ ...editEvent, scheduleId: e.target.value })
-                }
-              />
-              <TextField
                 id="scheduleName"
                 label="일정 이름"
                 variant="standard"
@@ -396,26 +466,6 @@ const CalendarComponent = () => {
                 value={editEvent.scheduleName}
                 onChange={(e) =>
                   setEditEvent({ ...editEvent, scheduleName: e.target.value })
-                }
-              />
-              <TextField
-                id="startTime"
-                label="시작 시간"
-                variant="standard"
-                name="startTime"
-                value={editEvent.startTime}
-                onChange={(e) =>
-                  setEditEvent({ ...editEvent, startTime: e.target.value })
-                }
-              />
-              <TextField
-                id="endTime"
-                label="끝나는 시간"
-                variant="standard"
-                name="endTime"
-                value={editEvent.endTime}
-                onChange={(e) =>
-                  setEditEvent({ ...editEvent, endTime: e.target.value })
                 }
               />
               <TextField
@@ -428,17 +478,6 @@ const CalendarComponent = () => {
                   setEditEvent({ ...editEvent, schedulDesc: e.target.value })
                 }
               />
-              <TextField
-                id="groupId"
-                label="그룹 ID"
-                variant="standard"
-                name="groupId"
-                value={editEvent.groupId}
-                onChange={(e) =>
-                  setEditEvent({ ...editEvent, groupId: e.target.value })
-                }
-              />
-
               <Button
                 variant="contained"
                 color="primary"

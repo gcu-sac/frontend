@@ -25,14 +25,20 @@ const NavBar = () => {
             display: "flex",
             flexDirection: "column",
             justifyContent: "space-between",
-            height: "160px",
+            height: "200px",
           }}
         >
           <UserIcon />
           <LinkButton
             href="../../user/login"
-            as="../user/login"
+            as="../../user/login"
             text="Login"
+            variant="contained"
+          />
+          <LinkButton
+            href="../../user/signup"
+            as="../../user/signup"
+            text="Sign Up"
             variant="contained"
           />
         </div>
