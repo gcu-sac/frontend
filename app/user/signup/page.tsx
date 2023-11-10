@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { Button, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material';
+import { signUp_link } from '@/app/links';
 
 function Page() {
   const [username, setUsername] = useState('');
@@ -35,7 +36,7 @@ function Page() {
 
   const onGetUser = async () => { //회원가입
     try{
-        const res = await axios.post('https://sac.prod.cluster.yanychoi.site/api/auth/user/signup', {"id": username, "password": password, "email": email, "nickname": nickname});
+        const res = await axios.post(signUp_link, {"id": username, "password": password, "email": email, "nickname": nickname});
         return res; //Axios로 실제 서버로부터 응답을 반환
     }catch(error){
         throw error;

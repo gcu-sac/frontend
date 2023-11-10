@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { Button } from '@mui/material';
+import { login_link } from '@/app/links';
 
 function Page() {
   const [username, setUsername] = useState('');
@@ -15,6 +16,7 @@ function Page() {
         if (response.status === 200) {
           console.log('로그인 성공!');
           localStorage.jwtAuthToken = response.headers['jwt-auth-token']; // response로 넘어온 jwt-auth-token을 localStorage에 저장
+          localStorage.username = username; //사용자의 id를 localstorage에 저장. 나중에 토큰과 같이 보내서 원하는 정보 요청
           window.location.href = '../../'; //로그인 완료 후 메인 화면으로 이동
         }
       } catch (error) {
@@ -24,7 +26,7 @@ function Page() {
 
   const onGetUser = async () => { //jwt서버로 로그인 토큰 정보 보냄
     try{
-        const res = await axios.post('https://sac.prod.cluster.yanychoi.site/api/auth/user/login', {"id": username, "password": password});
+        const res = await axios.post(login_link, {"id": username, "password": password});
         return res; //Axios로 실제 서버로부터 응답을 반환
     }catch(error){
         throw error;
