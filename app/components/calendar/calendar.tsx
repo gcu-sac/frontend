@@ -14,17 +14,6 @@ const CalendarComponent = () => {
   const [value, setValue] = useState<Date>(new Date());
   const [data, setData] = useState<Array<{ [key: string]: any }> | null>(null);
 
-  // const handleGetUsername = () => { //localStorage에서 user ID 가져오기
-  //   const username = localStorage.getItem('username');
-  //   console.log("username 꺼내오기: ", username);
-  //   return username;
-  // };
-  // const handleGetToken = () => { // localStorage에서 토큰 가져오기
-  //   const token = localStorage.getItem('jwtAuthToken'); 
-  //   console.log(token);
-  //   return token;
-  // };
-
   function getCookieValue(cookieName: string) {
     const cookieValue = Cookies.get(cookieName);
     return cookieValue || '';
@@ -132,6 +121,9 @@ const CalendarComponent = () => {
     console.log("editEvent: ", editEvent);
     axios
       .put(calendar_event_link+`/${editEvent.scheduleId}`, {
+        headers: {
+          "token": editEvent.token,
+        },
         "scheduleID": editEvent.scheduleId,
         "userID": editEvent.userId,
         "scheduleName": editEvent.scheduleName,
@@ -166,6 +158,9 @@ const CalendarComponent = () => {
    
     axios
       .post(calendar_event_link, {
+        headers: {
+          "token": newEvent.token,
+        },
         "scheduleID": newEvent.scheduleId,
         "userID": newEvent.userId,
         "scheduleName": newEvent.scheduleName,
@@ -204,7 +199,11 @@ const CalendarComponent = () => {
     //scheduleId를 백엔드로 넘김. 백엔드에서는 Id조회해서 해당 데이터 지우면 될듯
     console.log("scheduleId: " + scheduleId);
     axios
-      .delete(calendar_event_link+`/${scheduleId}`)
+      .delete(calendar_event_link+`/${scheduleId}`, {
+        headers: {
+          "token": getCookieValue('jwtAuthToken')
+        },
+      })
       .then((response) => {
         // Handle success
         console.log("Event deleted successfully:", response.data);
@@ -261,8 +260,12 @@ const CalendarComponent = () => {
       const year = date.getFullYear();
       const month = date.getMonth() + 1;
 
-      const endpoint = `/calendar/event?month=${month}&year=${year}`; //월 마다의 일정을 받아옴
-      const response = await axios.get(endpoint);
+      const endpoint = calendar_event_link + `?month=${month}&year=${year}`; //월 마다의 일정을 받아옴
+      const response = await axios.get(endpoint, {
+        headers: {
+          "token": getCookieValue('jwtAuthToken')
+        }
+      });
       setData(response.data);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -271,15 +274,15 @@ const CalendarComponent = () => {
 
   const selectedDate = value;
   const selectedDay = selectedDate.getDate();
-  // const selectedSchedules = data ? data.filter(schedule => {
-  //   const scheduleDate = new Date(schedule.startTime);
-  //   return scheduleDate.getDate() === selectedDay;
-  // }) : [];
-  const selectedSchedules = responseExample.filter((schedule) => {
-    //우선 test데이터 쓸 때 이거로 쓰는 중
+  const selectedSchedules = data ? data.filter(schedule => {
     const scheduleDate = new Date(schedule.startTime);
     return scheduleDate.getDate() === selectedDay;
-  });
+  }) : [];
+  // const selectedSchedules = responseExample.filter((schedule) => {
+  //   //우선 test데이터 쓸 때 이거로 쓰는 중
+  //   const scheduleDate = new Date(schedule.startTime);
+  //   return scheduleDate.getDate() === selectedDay;
+  // });
 
   const now = new Date();
   const nowYear = now.getFullYear();
