@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { Button } from '@mui/material';
 import { login_link } from '@/app/links';
+import Cookies from 'js-cookie';
 
 function Page() {
   const [username, setUsername] = useState('');
@@ -15,8 +16,13 @@ function Page() {
         
         if (response.status === 200) {
           console.log('로그인 성공!');
-          localStorage.jwtAuthToken = response.headers['jwt-auth-token']; // response로 넘어온 jwt-auth-token을 localStorage에 저장
-          localStorage.username = username; //사용자의 id를 localstorage에 저장. 나중에 토큰과 같이 보내서 원하는 정보 요청
+          // localStorage.jwtAuthToken = response.headers['jwt-auth-token']; // response로 넘어온 jwt-auth-token을 localStorage에 저장
+          // localStorage.username = username; //사용자의 id를 localstorage에 저장. 나중에 토큰과 같이 보내서 원하는 정보 요청
+          // 토큰을 쿠키에 저장
+          Cookies.set('jwtAuthToken', response.headers['jwt-auth-token'], { secure: true, sameSite: 'strict' });
+          // 다른 필요한 정보도 함께 저장 가능
+          Cookies.set('username', username, { secure: true, sameSite: 'strict' });
+
           window.location.href = '../../'; //로그인 완료 후 메인 화면으로 이동
         }
       } catch (error) {

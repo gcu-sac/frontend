@@ -8,27 +8,34 @@ import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
 import NativeSelect from '@mui/material/NativeSelect';
 import {calendar_event_link} from '@/app/links';
+import Cookies from 'js-cookie';
 
 const CalendarComponent = () => {
   const [value, setValue] = useState<Date>(new Date());
   const [data, setData] = useState<Array<{ [key: string]: any }> | null>(null);
 
-  const handleGetUsername = () => { //localStorage에서 user ID 가져오기
-    const username = localStorage.getItem('username');
-    console.log("username 꺼내오기: ", username);
-    return username;
-  };
-  const handleGetToken = () => { // localStorage에서 토큰 가져오기
-    const token = localStorage.getItem('jwtAuthToken'); 
-    console.log(token);
-    return token;
-  };
+  // const handleGetUsername = () => { //localStorage에서 user ID 가져오기
+  //   const username = localStorage.getItem('username');
+  //   console.log("username 꺼내오기: ", username);
+  //   return username;
+  // };
+  // const handleGetToken = () => { // localStorage에서 토큰 가져오기
+  //   const token = localStorage.getItem('jwtAuthToken'); 
+  //   console.log(token);
+  //   return token;
+  // };
+
+  function getCookieValue(cookieName: string) {
+    const cookieValue = Cookies.get(cookieName);
+    return cookieValue || '';
+  }
+
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newEvent, setNewEvent] = useState({ //새 일정을 추가할때 필요한 정보들
     scheduleId: "",
-    userId: handleGetUsername(),
-    token: handleGetToken(),
+    userId: getCookieValue('username'),
+    token: getCookieValue('jwtAuthToken'),
     scheduleName: "",
     schedulDesc: "",    
   });
@@ -55,8 +62,8 @@ const CalendarComponent = () => {
   // 선택한 일정을 수정할 때 사용할 state
   const [editEvent, setEditEvent] = useState({
     scheduleId: "",
-    userId: handleGetUsername(),
-    token: handleGetToken(),
+    userId: getCookieValue('username'),
+    token: getCookieValue('jwtAuthToken'),
     scheduleName: "",
     schedulDesc: "",
     startYear: 0,
@@ -83,8 +90,8 @@ const CalendarComponent = () => {
     console.log("e: ", endDateTime);
     setEditEvent({
       scheduleId: schedule.scheduleId,
-      userId: handleGetUsername(),
-      token: handleGetToken(),
+      userId: getCookieValue('username'),
+      token: getCookieValue('jwtAuthToken'),
       scheduleName: schedule.scheduleName,
       schedulDesc: schedule.schedulDesc,
       startYear: startDateTime.year,
