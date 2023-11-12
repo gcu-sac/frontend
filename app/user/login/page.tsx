@@ -1,13 +1,16 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import axios from 'axios';
 import { Button } from '@mui/material';
 import { BASE_URL_AUTH, login_link } from '@/app/links';
 import Cookies from 'js-cookie';
+import { UserContext } from '@/app/context/user';
 
 function Page() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+
+  const { user, setUser } = useContext(UserContext);
 
   const handleLogin = async () => { //로그인 처리를 수행
     try {
@@ -21,7 +24,10 @@ function Page() {
           // 다른 필요한 정보도 함께 저장 가능
           Cookies.set('username', username, { secure: true, sameSite: 'strict' });
 
-          axios.get(BASE_URL_AUTH, {useCredentials: true})
+          axios.get(BASE_URL_AUTH, {withCredentials: true})
+          .then((res) => {
+            setUser(res.data);
+          });
 
           window.location.href = '../../'; //로그인 완료 후 메인 화면으로 이동
         }
