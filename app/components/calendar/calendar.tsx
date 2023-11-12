@@ -26,7 +26,7 @@ const CalendarComponent = () => {
     userId: getCookieValue('username'),
     token: getCookieValue('jwtAuthToken'),
     scheduleName: "",
-    schedulDesc: "",    
+    scheduleDesc: "",    
   });
 
   const modalRef = useRef(null);
@@ -54,7 +54,7 @@ const CalendarComponent = () => {
     userId: getCookieValue('username'),
     token: getCookieValue('jwtAuthToken'),
     scheduleName: "",
-    schedulDesc: "",
+    scheduleDesc: "",
     startYear: 0,
     startMonth: 0,
     startDay: 0,
@@ -82,7 +82,7 @@ const CalendarComponent = () => {
       userId: getCookieValue('username'),
       token: getCookieValue('jwtAuthToken'),
       scheduleName: schedule.scheduleName,
-      schedulDesc: schedule.schedulDesc,
+      scheduleDesc: schedule.scheduleDesc,
       startYear: startDateTime.year,
       startMonth: startDateTime.month,
       startDay: startDateTime.day,
@@ -127,7 +127,7 @@ const CalendarComponent = () => {
         "scheduleID": editEvent.scheduleId,
         "userID": editEvent.userId,
         "scheduleName": editEvent.scheduleName,
-        "scheduleDesc": editEvent.schedulDesc,
+        "scheduleDesc": editEvent.scheduleDesc,
         "time": {
           "StartYear": editEvent.startYear,
           "StartMonth": editEvent.startMonth,
@@ -164,7 +164,7 @@ const CalendarComponent = () => {
         "scheduleID": newEvent.scheduleId,
         "userID": newEvent.userId,
         "scheduleName": newEvent.scheduleName,
-        "scheduleDesc": newEvent.schedulDesc,
+        "scheduleDesc": newEvent.scheduleDesc,
         "time": {
           "StartYear": form.startYear,
           "StartMonth": form.startMonth,
@@ -233,21 +233,21 @@ const CalendarComponent = () => {
       scheduleName: "Event 12",
       startTime: "2023-12-12T09:05:00",
       endTime: "2023-12-12T10:30:00",
-      schedulDesc: "Description 12",
+      scheduleDesc: "Description 12",
     },
     {
       scheduleId: 13,
       scheduleName: "Event 13",
       startTime: "2023-12-13T09:00:00",
       endTime: "2023-12-13T10:00:00",
-      schedulDesc: "Description 13",
+      scheduleDesc: "Description 13",
     },
     {
       scheduleId: 14,
       scheduleName: "Event 14",
       startTime: "2023-12-12T09:00:00",
       endTime: "2023-12-12T10:00:00",
-      schedulDesc: "Description 14",
+      scheduleDesc: "Description 14",
     },
   ];
 
@@ -391,7 +391,7 @@ const CalendarComponent = () => {
                   {"scheduleName: " + schedule.scheduleName}
                 </p>
                 <p style={{ margin: "16px 0px 0px 0px" }}>
-                  {"schedulDesc: " + schedule.schedulDesc}
+                  {"scheduleDesc: " + schedule.scheduleDesc}
                 </p>
               </div>
               <div
@@ -604,11 +604,11 @@ const CalendarComponent = () => {
                 </NativeSelect>
               </FormControl>
               <TextField
-                id="schedulDesc"
+                id="scheduleDesc"
                 label="내용"
                 variant="standard"
-                name="schedulDesc"
-                value={newEvent.schedulDesc}
+                name="scheduleDesc"
+                value={newEvent.scheduleDesc}
                 onChange={handleInputChange}
               />
               <Button
@@ -819,13 +819,13 @@ const CalendarComponent = () => {
                 </NativeSelect>
               </FormControl>
               <TextField
-                id="schedulDesc"
+                id="scheduleDesc"
                 label="내용"
                 variant="standard"
-                name="schedulDesc"
-                value={editEvent.schedulDesc}
+                name="scheduleDesc"
+                value={editEvent.scheduleDesc}
                 onChange={(e) =>
-                  setEditEvent({ ...editEvent, schedulDesc: e.target.value })
+                  setEditEvent({ ...editEvent, scheduleDesc: e.target.value })
                 }
               />
               <Button
