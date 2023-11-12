@@ -5,10 +5,17 @@ import Image from "next/image";
 import userImage from "../../public/user-profile.png";
 import UserIcon from "../user-icon/user-icon";
 import { useContext } from "react";
+import Cookies from 'js-cookie';
+import { Button } from "@mui/material";
 
 const NavBar = () => {
 
   const { user } = useContext(UserContext);
+
+  const handleLogout = () => {
+    Cookies.remove('jwtAuthToken');
+    window.location.href = '../../'; //로그아웃 완료 후 메인 화면으로 이동
+  };
 
   return (
     <UserContextProvider>
@@ -31,19 +38,37 @@ const NavBar = () => {
             height: "200px",
           }}
         >
-          <UserIcon />
-          <LinkButton
-            href="../../user/login"
-            as="../../user/login"
-            text="Login"
-            variant="contained"
-          />
-          <LinkButton
-            href="../../user/signup"
-            as="../../user/signup"
-            text="Sign Up"
-            variant="contained"
-          />
+          {user && user.id ? ( // user.id에 값이 있나 없나로 로그인 판별
+            <>
+              <UserIcon />
+              <LinkButton
+                href="../../user/profile"
+                as="../../user/profile"
+                text={user.nickname}
+                variant="contained"
+              />
+              <button onClick={handleLogout} className="contained" >
+                LOGOUT
+              </button>
+              
+            </>
+          ) : (
+            <>
+              <UserIcon />
+              <LinkButton
+                href="../../user/login"
+                as="../../user/login"
+                text="Login"
+                variant="contained"
+              />
+              <LinkButton
+                href="../../user/signup"
+                as="../../user/signup"
+                text="Sign Up"
+                variant="contained"
+              />
+            </>
+          )}
         </div>
         <div
           style={{
