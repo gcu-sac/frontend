@@ -4,11 +4,11 @@ import { useState, useEffect, useRef } from "react";
 import "react-calendar/dist/Calendar.css";
 import axios from "axios";
 import { Button, Modal, Paper, TextField } from "@mui/material";
-import InputLabel from '@mui/material/InputLabel';
-import FormControl from '@mui/material/FormControl';
-import NativeSelect from '@mui/material/NativeSelect';
-import {calendar_event_link} from '@/app/links';
-import Cookies from 'js-cookie';
+import InputLabel from "@mui/material/InputLabel";
+import FormControl from "@mui/material/FormControl";
+import NativeSelect from "@mui/material/NativeSelect";
+import { calendar_event_link } from "@/app/links";
+import Cookies from "js-cookie";
 
 const CalendarComponent = () => {
   const [value, setValue] = useState<Date>(new Date());
@@ -16,17 +16,17 @@ const CalendarComponent = () => {
 
   function getCookieValue(cookieName: string) {
     const cookieValue = Cookies.get(cookieName);
-    return cookieValue || '';
+    return cookieValue || "";
   }
 
-
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [newEvent, setNewEvent] = useState({ //새 일정을 추가할때 필요한 정보들
+  const [newEvent, setNewEvent] = useState({
+    //새 일정을 추가할때 필요한 정보들
     scheduleId: "",
-    userId: getCookieValue('username'),
-    token: getCookieValue('jwtAuthToken'),
+    userId: getCookieValue("username"),
+    token: getCookieValue("jwtAuthToken"),
     scheduleName: "",
-    scheduleDesc: "",    
+    scheduleDesc: "",
   });
 
   const modalRef = useRef(null);
@@ -39,7 +39,8 @@ const CalendarComponent = () => {
     setIsModalOpen(false);
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => { //새 일정 추가하는 useState에 정보 넣기
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    //새 일정 추가하는 useState에 정보 넣기
     const { name, value } = e.target;
     setNewEvent({
       ...newEvent,
@@ -47,12 +48,11 @@ const CalendarComponent = () => {
     });
   };
 
-
   // 선택한 일정을 수정할 때 사용할 state
   const [editEvent, setEditEvent] = useState({
     scheduleId: "",
-    userId: getCookieValue('username'),
-    token: getCookieValue('jwtAuthToken'),
+    userId: getCookieValue("username"),
+    token: getCookieValue("jwtAuthToken"),
     scheduleName: "",
     scheduleDesc: "",
     startYear: 0,
@@ -72,15 +72,15 @@ const CalendarComponent = () => {
   // 일정 수정 모달 열기
   const openEditModal = (schedule: any) => {
     const { startTime, endTime } = schedule;
-    
+
     const startDateTime = extractDateTime(startTime);
     const endDateTime = extractDateTime(endTime);
     console.log("s: ", startDateTime);
     console.log("e: ", endDateTime);
     setEditEvent({
       scheduleId: schedule.scheduleId,
-      userId: getCookieValue('username'),
-      token: getCookieValue('jwtAuthToken'),
+      userId: getCookieValue("username"),
+      token: getCookieValue("jwtAuthToken"),
       scheduleName: schedule.scheduleName,
       scheduleDesc: schedule.scheduleDesc,
       startYear: startDateTime.year,
@@ -98,13 +98,13 @@ const CalendarComponent = () => {
   };
   const extractDateTime = (dateTimeString: string) => {
     const date = new Date(dateTimeString);
-  
+
     const year = date.getFullYear();
     const month = date.getMonth() + 1; // 월은 0부터 시작하므로 1을 더합니다.
     const day = date.getDate();
     const hours = date.getHours();
     const minutes = date.getMinutes();
-  
+
     return { year, month, day, hours, minutes };
   };
 
@@ -112,7 +112,6 @@ const CalendarComponent = () => {
   const closeEditModal = () => {
     setIsEditModalOpen(false);
   };
-  
 
   // 일정 수정 로직
   const handleEditEvent = (schedule: any) => {
@@ -120,26 +119,26 @@ const CalendarComponent = () => {
     console.log("schedule: ", schedule);
     console.log("editEvent: ", editEvent);
     axios
-      .put(calendar_event_link+`/${editEvent.scheduleId}`, {
+      .put(calendar_event_link + `/${editEvent.scheduleId}`, {
         headers: {
-          "token": editEvent.token,
+          token: editEvent.token,
         },
-        "scheduleID": editEvent.scheduleId,
-        "userID": editEvent.userId,
-        "scheduleName": editEvent.scheduleName,
-        "scheduleDesc": editEvent.scheduleDesc,
-        "time": {
-          "StartYear": editEvent.startYear,
-          "StartMonth": editEvent.startMonth,
-          "StartDay": editEvent.startDay,
-          "StartHour": editEvent.startHour,
-          "StartMin": editEvent.startMin,
-          "EndYear": editEvent.endYear,
-          "EndMonth": editEvent.endMonth,
-          "EndDay": editEvent.endDay,
-          "EndHour": editEvent.endHour,
-          "EndMin": editEvent.endMin,
-        }
+        scheduleID: editEvent.scheduleId,
+        userID: editEvent.userId,
+        scheduleName: editEvent.scheduleName,
+        scheduleDesc: editEvent.scheduleDesc,
+        time: {
+          StartYear: editEvent.startYear,
+          StartMonth: editEvent.startMonth,
+          StartDay: editEvent.startDay,
+          StartHour: editEvent.startHour,
+          StartMin: editEvent.startMin,
+          EndYear: editEvent.endYear,
+          EndMonth: editEvent.endMonth,
+          EndDay: editEvent.endDay,
+          EndHour: editEvent.endHour,
+          EndMin: editEvent.endMin,
+        },
       })
       .then((response) => {
         // 수정 성공 시
@@ -155,28 +154,28 @@ const CalendarComponent = () => {
   //일정 추가.
   const handleAddEvent = () => {
     //새 일정 추가 백엔드로 전송하는 부분
-   
+
     axios
       .post(calendar_event_link, {
         headers: {
-          "token": newEvent.token,
+          token: newEvent.token,
         },
-        "scheduleID": newEvent.scheduleId,
-        "userID": newEvent.userId,
-        "scheduleName": newEvent.scheduleName,
-        "scheduleDesc": newEvent.scheduleDesc,
-        "time": {
-          "StartYear": form.startYear,
-          "StartMonth": form.startMonth,
-          "StartDay": form.startDay,
-          "StartHour": form.startHour,
-          "StartMin": form.startMin,
-          "EndYear": endform.endYear,
-          "EndMonth": endform.endMonth,
-          "EndDay": endform.endDay,
-          "EndHour": endform.endHour,
-          "EndMin": endform.endMin,
-        }
+        scheduleID: newEvent.scheduleId,
+        userID: newEvent.userId,
+        scheduleName: newEvent.scheduleName,
+        scheduleDesc: newEvent.scheduleDesc,
+        time: {
+          StartYear: form.startYear,
+          StartMonth: form.startMonth,
+          StartDay: form.startDay,
+          StartHour: form.startHour,
+          StartMin: form.startMin,
+          EndYear: endform.endYear,
+          EndMonth: endform.endMonth,
+          EndDay: endform.endDay,
+          EndHour: endform.endHour,
+          EndMin: endform.endMin,
+        },
       })
       .then((response) => {
         // Handle success
@@ -199,9 +198,9 @@ const CalendarComponent = () => {
     //scheduleId를 백엔드로 넘김. 백엔드에서는 Id조회해서 해당 데이터 지우면 될듯
     console.log("scheduleId: " + scheduleId);
     axios
-      .delete(calendar_event_link+`/${scheduleId}`, {
+      .delete(calendar_event_link + `/${scheduleId}`, {
         headers: {
-          "token": getCookieValue('jwtAuthToken')
+          token: getCookieValue("jwtAuthToken"),
         },
       })
       .then((response) => {
@@ -263,8 +262,8 @@ const CalendarComponent = () => {
       const endpoint = calendar_event_link + `?month=${month}&year=${year}`; //월 마다의 일정을 받아옴
       const response = await axios.get(endpoint, {
         headers: {
-          "token": getCookieValue('jwtAuthToken')
-        }
+          token: getCookieValue("jwtAuthToken"),
+        },
       });
       setData(response.data);
     } catch (error) {
@@ -274,10 +273,12 @@ const CalendarComponent = () => {
 
   const selectedDate = value;
   const selectedDay = selectedDate.getDate();
-  const selectedSchedules = data ? data.filter(schedule => {
-    const scheduleDate = new Date(schedule.startTime);
-    return scheduleDate.getDate() === selectedDay;
-  }) : [];
+  const selectedSchedules = data
+    ? data.filter((schedule) => {
+        const scheduleDate = new Date(schedule.startTime);
+        return scheduleDate.getDate() === selectedDay;
+      })
+    : [];
   // const selectedSchedules = responseExample.filter((schedule) => {
   //   //우선 test데이터 쓸 때 이거로 쓰는 중
   //   const scheduleDate = new Date(schedule.startTime);
@@ -287,7 +288,8 @@ const CalendarComponent = () => {
   const now = new Date();
   const nowYear = now.getFullYear();
 
-  const [form, setForm] = useState({ //일정 시작 날짜 입력 시 사용 할 useState
+  const [form, setForm] = useState({
+    //일정 시작 날짜 입력 시 사용 할 useState
     startYear: nowYear,
     startMonth: "01",
     startDay: "01",
@@ -295,14 +297,15 @@ const CalendarComponent = () => {
     startMin: "01",
   });
 
-  const [endform, setEndForm] = useState({ //일정 종료 날짜 입력 시 사용 할 useState
+  const [endform, setEndForm] = useState({
+    //일정 종료 날짜 입력 시 사용 할 useState
     endYear: nowYear,
     endMonth: "01",
     endDay: "01",
     endHour: "01",
     endMin: "01",
   });
-  
+
   let years = []; //year list
   for (let y = now.getFullYear(); y >= 1930; y -= 1) {
     years.push(y);
@@ -321,15 +324,15 @@ const CalendarComponent = () => {
   let date = new Date(form.startYear, parseInt(form.startMonth), 0).getDate();
   for (let d = 1; d <= date; d += 1) {
     if (d < 10) {
-     // 날짜가 2자리로 나타나야 했기 때문에 1자리 일에 0을 붙혀준다
+      // 날짜가 2자리로 나타나야 했기 때문에 1자리 일에 0을 붙혀준다
       days.push("0" + d.toString());
     } else {
       days.push(d.toString());
     }
   }
-  
+
   let hour = []; //hour list
-  for(let i = 1; i<=24; i++){
+  for (let i = 1; i <= 24; i++) {
     if (i < 10) {
       //시간이 2자리로 나타나야 했기 때문에 1자리 시간 앞에 0을 붙혀준다
       hour.push("0" + i.toString());
@@ -339,7 +342,7 @@ const CalendarComponent = () => {
   }
 
   let min = []; //min list
-  for(let j = 0; j<=59; j++){
+  for (let j = 0; j <= 59; j++) {
     if (j < 10) {
       //'분'이 2자리로 나타나야 했기 때문에 1자리 시간 앞에 0을 붙혀준다
       min.push("0" + j.toString());
@@ -411,7 +414,7 @@ const CalendarComponent = () => {
           <p>일정이 없습니다.</p>
         )}
       </div>
-      
+
       {/* 추가 modal 부분 */}
       <Modal
         open={isModalOpen}
@@ -449,15 +452,23 @@ const CalendarComponent = () => {
                 value={newEvent.scheduleName}
                 onChange={handleInputChange}
               />
-              <FormControl fullWidth style={{display: "flex", flexDirection: "row", justifyContent: "space-around"}}>
-                
+              <FormControl
+                fullWidth
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "space-around",
+                }}
+              >
                 <NativeSelect
                   defaultValue={form.startYear}
                   inputProps={{
-                    name: 'year',
-                    id: 'year',
+                    name: "year",
+                    id: "year",
                   }}
-                  onChange={(e) => setForm({ ...form, startYear: parseInt(e.target.value) })}
+                  onChange={(e) =>
+                    setForm({ ...form, startYear: parseInt(e.target.value) })
+                  }
                 >
                   {years.map((item) => (
                     <option value={item} key={item}>
@@ -465,14 +476,16 @@ const CalendarComponent = () => {
                     </option>
                   ))}
                 </NativeSelect>
-                
+
                 <NativeSelect
                   defaultValue={form.startMonth}
                   inputProps={{
-                    name: 'month',
-                    id: 'month',
+                    name: "month",
+                    id: "month",
                   }}
-                  onChange={(e) => setForm({ ...form, startMonth: e.target.value })}
+                  onChange={(e) =>
+                    setForm({ ...form, startMonth: e.target.value })
+                  }
                 >
                   {month.map((item) => (
                     <option value={item} key={item}>
@@ -480,14 +493,16 @@ const CalendarComponent = () => {
                     </option>
                   ))}
                 </NativeSelect>
-                
+
                 <NativeSelect
                   defaultValue={form.startDay}
                   inputProps={{
-                    name: 'day',
-                    id: 'day',
+                    name: "day",
+                    id: "day",
                   }}
-                  onChange={(e) => setForm({ ...form, startDay: e.target.value })}
+                  onChange={(e) =>
+                    setForm({ ...form, startDay: e.target.value })
+                  }
                 >
                   {days.map((item) => (
                     <option value={item} key={item}>
@@ -495,14 +510,16 @@ const CalendarComponent = () => {
                     </option>
                   ))}
                 </NativeSelect>
-                
+
                 <NativeSelect
                   defaultValue={form.startHour}
                   inputProps={{
-                    name: 'hour',
-                    id: 'hour',
+                    name: "hour",
+                    id: "hour",
                   }}
-                  onChange={(e) => setForm({ ...form, startHour: e.target.value })}
+                  onChange={(e) =>
+                    setForm({ ...form, startHour: e.target.value })
+                  }
                 >
                   {hour.map((item) => (
                     <option value={item} key={item}>
@@ -510,14 +527,16 @@ const CalendarComponent = () => {
                     </option>
                   ))}
                 </NativeSelect>
-                
+
                 <NativeSelect
                   defaultValue={form.startMin}
                   inputProps={{
-                    name: 'min',
-                    id: 'min',
+                    name: "min",
+                    id: "min",
                   }}
-                  onChange={(e) => setForm({ ...form, startMin: e.target.value })}
+                  onChange={(e) =>
+                    setForm({ ...form, startMin: e.target.value })
+                  }
                 >
                   {min.map((item) => (
                     <option value={item} key={item}>
@@ -526,15 +545,26 @@ const CalendarComponent = () => {
                   ))}
                 </NativeSelect>
               </FormControl>
-              <FormControl fullWidth style={{display: "flex", flexDirection: "row", justifyContent: "space-around"}}>
-                
+              <FormControl
+                fullWidth
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "space-around",
+                }}
+              >
                 <NativeSelect
                   defaultValue={endform.endYear}
                   inputProps={{
-                    name: 'year',
-                    id: 'year',
+                    name: "year",
+                    id: "year",
                   }}
-                  onChange={(e) => setEndForm({ ...endform, endYear: parseInt(e.target.value) })}
+                  onChange={(e) =>
+                    setEndForm({
+                      ...endform,
+                      endYear: parseInt(e.target.value),
+                    })
+                  }
                 >
                   {years.map((item) => (
                     <option value={item} key={item}>
@@ -542,14 +572,16 @@ const CalendarComponent = () => {
                     </option>
                   ))}
                 </NativeSelect>
-                
+
                 <NativeSelect
                   defaultValue={endform.endMonth}
                   inputProps={{
-                    name: 'month',
-                    id: 'month',
+                    name: "month",
+                    id: "month",
                   }}
-                  onChange={(e) => setEndForm({ ...endform, endMonth: e.target.value })}
+                  onChange={(e) =>
+                    setEndForm({ ...endform, endMonth: e.target.value })
+                  }
                 >
                   {month.map((item) => (
                     <option value={item} key={item}>
@@ -557,14 +589,16 @@ const CalendarComponent = () => {
                     </option>
                   ))}
                 </NativeSelect>
-                
+
                 <NativeSelect
                   defaultValue={endform.endDay}
                   inputProps={{
-                    name: 'day',
-                    id: 'day',
+                    name: "day",
+                    id: "day",
                   }}
-                  onChange={(e) => setEndForm({ ...endform, endDay: e.target.value })}
+                  onChange={(e) =>
+                    setEndForm({ ...endform, endDay: e.target.value })
+                  }
                 >
                   {days.map((item) => (
                     <option value={item} key={item}>
@@ -572,14 +606,16 @@ const CalendarComponent = () => {
                     </option>
                   ))}
                 </NativeSelect>
-                
+
                 <NativeSelect
                   defaultValue={endform.endHour}
                   inputProps={{
-                    name: 'hour',
-                    id: 'hour',
+                    name: "hour",
+                    id: "hour",
                   }}
-                  onChange={(e) => setEndForm({ ...endform, endHour: e.target.value })}
+                  onChange={(e) =>
+                    setEndForm({ ...endform, endHour: e.target.value })
+                  }
                 >
                   {hour.map((item) => (
                     <option value={item} key={item}>
@@ -587,14 +623,16 @@ const CalendarComponent = () => {
                     </option>
                   ))}
                 </NativeSelect>
-                
+
                 <NativeSelect
                   defaultValue={endform.endMin}
                   inputProps={{
-                    name: 'min',
-                    id: 'min',
+                    name: "min",
+                    id: "min",
                   }}
-                  onChange={(e) => setEndForm({ ...endform, endMin: e.target.value })}
+                  onChange={(e) =>
+                    setEndForm({ ...endform, endMin: e.target.value })
+                  }
                 >
                   {min.map((item) => (
                     <option value={item} key={item}>
@@ -625,7 +663,7 @@ const CalendarComponent = () => {
           </div>
         </Paper>
       </Modal>
-      
+
       {/* 수정 modal 부분 */}
       <Modal
         open={isEditModalOpen}
@@ -665,15 +703,26 @@ const CalendarComponent = () => {
                   setEditEvent({ ...editEvent, scheduleName: e.target.value })
                 }
               />
-              <FormControl fullWidth style={{display: "flex", flexDirection: "row", justifyContent: "space-around"}}>
-                
+              <FormControl
+                fullWidth
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "space-around",
+                }}
+              >
                 <NativeSelect
                   defaultValue={String(editEvent.startYear)}
                   inputProps={{
-                    name: 'year',
-                    id: 'year',
+                    name: "year",
+                    id: "year",
                   }}
-                  onChange={(e) => setEditEvent({ ...editEvent, startYear: parseInt(e.target.value) })}
+                  onChange={(e) =>
+                    setEditEvent({
+                      ...editEvent,
+                      startYear: parseInt(e.target.value),
+                    })
+                  }
                 >
                   {years.map((item) => (
                     <option value={item} key={item}>
@@ -681,14 +730,19 @@ const CalendarComponent = () => {
                     </option>
                   ))}
                 </NativeSelect>
-                
+
                 <NativeSelect
                   defaultValue={String(editEvent.startMonth)}
                   inputProps={{
-                    name: 'month',
-                    id: 'month',
+                    name: "month",
+                    id: "month",
                   }}
-                  onChange={(e) => setEditEvent({ ...editEvent, startMonth: parseInt(e.target.value) })}
+                  onChange={(e) =>
+                    setEditEvent({
+                      ...editEvent,
+                      startMonth: parseInt(e.target.value),
+                    })
+                  }
                 >
                   {month.map((item) => (
                     <option value={item} key={item}>
@@ -696,14 +750,19 @@ const CalendarComponent = () => {
                     </option>
                   ))}
                 </NativeSelect>
-                
+
                 <NativeSelect
                   defaultValue={String(editEvent.startDay)}
                   inputProps={{
-                    name: 'day',
-                    id: 'day',
+                    name: "day",
+                    id: "day",
                   }}
-                  onChange={(e) => setEditEvent({ ...editEvent, startDay: parseInt(e.target.value) })}
+                  onChange={(e) =>
+                    setEditEvent({
+                      ...editEvent,
+                      startDay: parseInt(e.target.value),
+                    })
+                  }
                 >
                   {days.map((item) => (
                     <option value={item} key={item}>
@@ -714,10 +773,15 @@ const CalendarComponent = () => {
                 <NativeSelect
                   defaultValue={String(editEvent.startHour)}
                   inputProps={{
-                    name: 'hour',
-                    id: 'hour',
+                    name: "hour",
+                    id: "hour",
                   }}
-                  onChange={(e) => setEditEvent({ ...editEvent, startHour: parseInt(e.target.value) })}
+                  onChange={(e) =>
+                    setEditEvent({
+                      ...editEvent,
+                      startHour: parseInt(e.target.value),
+                    })
+                  }
                 >
                   {hour.map((item) => (
                     <option value={item} key={item}>
@@ -725,14 +789,19 @@ const CalendarComponent = () => {
                     </option>
                   ))}
                 </NativeSelect>
-                
+
                 <NativeSelect
                   defaultValue={String(editEvent.startMin)}
                   inputProps={{
-                    name: 'min',
-                    id: 'min',
+                    name: "min",
+                    id: "min",
                   }}
-                  onChange={(e) => setEditEvent({ ...editEvent, startMin: parseInt(e.target.value) })}
+                  onChange={(e) =>
+                    setEditEvent({
+                      ...editEvent,
+                      startMin: parseInt(e.target.value),
+                    })
+                  }
                 >
                   {min.map((item) => (
                     <option value={item} key={item}>
@@ -741,15 +810,26 @@ const CalendarComponent = () => {
                   ))}
                 </NativeSelect>
               </FormControl>
-              <FormControl fullWidth style={{display: "flex", flexDirection: "row", justifyContent: "space-around"}}>
-                
+              <FormControl
+                fullWidth
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "space-around",
+                }}
+              >
                 <NativeSelect
                   defaultValue={String(editEvent.endYear)}
                   inputProps={{
-                    name: 'year',
-                    id: 'year',
+                    name: "year",
+                    id: "year",
                   }}
-                  onChange={(e) => setEditEvent({ ...editEvent, endYear: parseInt(e.target.value) })}
+                  onChange={(e) =>
+                    setEditEvent({
+                      ...editEvent,
+                      endYear: parseInt(e.target.value),
+                    })
+                  }
                 >
                   {years.map((item) => (
                     <option value={item} key={item}>
@@ -757,14 +837,19 @@ const CalendarComponent = () => {
                     </option>
                   ))}
                 </NativeSelect>
-                
+
                 <NativeSelect
                   defaultValue={String(editEvent.endMonth)}
                   inputProps={{
-                    name: 'month',
-                    id: 'month',
+                    name: "month",
+                    id: "month",
                   }}
-                  onChange={(e) => setEditEvent({ ...editEvent, endMonth: parseInt(e.target.value) })}
+                  onChange={(e) =>
+                    setEditEvent({
+                      ...editEvent,
+                      endMonth: parseInt(e.target.value),
+                    })
+                  }
                 >
                   {month.map((item) => (
                     <option value={item} key={item}>
@@ -772,14 +857,19 @@ const CalendarComponent = () => {
                     </option>
                   ))}
                 </NativeSelect>
-                
+
                 <NativeSelect
                   defaultValue={String(editEvent.endDay)}
                   inputProps={{
-                    name: 'day',
-                    id: 'day',
+                    name: "day",
+                    id: "day",
                   }}
-                  onChange={(e) => setEditEvent({ ...editEvent, endDay: parseInt(e.target.value) })}
+                  onChange={(e) =>
+                    setEditEvent({
+                      ...editEvent,
+                      endDay: parseInt(e.target.value),
+                    })
+                  }
                 >
                   {days.map((item) => (
                     <option value={item} key={item}>
@@ -787,14 +877,19 @@ const CalendarComponent = () => {
                     </option>
                   ))}
                 </NativeSelect>
-                
+
                 <NativeSelect
                   defaultValue={String(editEvent.endHour)}
                   inputProps={{
-                    name: 'hour',
-                    id: 'hour',
+                    name: "hour",
+                    id: "hour",
                   }}
-                  onChange={(e) => setEditEvent({ ...editEvent, endHour: parseInt(e.target.value) })}
+                  onChange={(e) =>
+                    setEditEvent({
+                      ...editEvent,
+                      endHour: parseInt(e.target.value),
+                    })
+                  }
                 >
                   {hour.map((item) => (
                     <option value={item} key={item}>
@@ -802,14 +897,19 @@ const CalendarComponent = () => {
                     </option>
                   ))}
                 </NativeSelect>
-                
+
                 <NativeSelect
                   defaultValue={String(editEvent.endMin)}
                   inputProps={{
-                    name: 'min',
-                    id: 'min',
+                    name: "min",
+                    id: "min",
                   }}
-                  onChange={(e) => setEditEvent({ ...editEvent, endMin: parseInt(e.target.value) })}
+                  onChange={(e) =>
+                    setEditEvent({
+                      ...editEvent,
+                      endMin: parseInt(e.target.value),
+                    })
+                  }
                 >
                   {min.map((item) => (
                     <option value={item} key={item}>

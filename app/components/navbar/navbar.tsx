@@ -1,11 +1,14 @@
 "use client";
-import { UserContextProvider } from "@/app/context/user";
+import { UserContext, UserContextProvider } from "@/app/context/user";
 import LinkButton from "../link-button/link-button";
 import Image from "next/image";
 import userImage from "../../public/user-profile.png";
 import UserIcon from "../user-icon/user-icon";
+import { useContext } from "react";
 
 const NavBar = () => {
+
+  const { user } = useContext(UserContext);
 
   return (
     <UserContextProvider>
