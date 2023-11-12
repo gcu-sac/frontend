@@ -1,3 +1,4 @@
+"use client";
 import { ReactNode, createContext, useEffect, useState } from "react";
 import { UserContextType, UserType } from "./type/user";
 import Cookies from "js-cookie";
@@ -15,12 +16,16 @@ export const UserContextProvider = ({ children }: { children: ReactNode }) => {
     email: "",
   });
 
+  useEffect(() => {
+    console.log(user);
+  }, [user]);
+
   const [userToken, setUserToken] = useState<string>(
     Cookies.get("userToken") || ""
   );
 
   useEffect(() => {
-    axios.get(`${BASE_URL_AUTH}/user/id/${user.id}`).then((res) => {
+    axios.get(`${BASE_URL_AUTH}/`, { withCredentials: true }).then((res) => {
       setUser(res.data);
     });
   }, [userToken]);

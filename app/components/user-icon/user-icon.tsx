@@ -16,16 +16,7 @@ const UserIcon = () => {
         position: "relative",
       }}
     >
-      {user.profileImage ? (
-        <Image
-          src={user.profileImage}
-          alt="user image"
-          width={100}
-          height={100}
-        />
-      ) : (
-        <Image src={userImage} alt="user image" width={100} height={100} />
-      )}
+      <Image src={userImage} alt="user image" width={100} height={100} />
     </div>
   );
 };

@@ -18,7 +18,6 @@ const NavBar = () => {
   };
 
   return (
-    <UserContextProvider>
       <div
         style={{
           display: "flex",
@@ -82,7 +81,6 @@ const NavBar = () => {
           <LinkButton href="../community" as="../community" text="Community" />
         </div>
       </div>
-    </UserContextProvider>
   );
 };
 

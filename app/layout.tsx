@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import NavBar from "./components/navbar/navbar";
+import { UserContextProvider } from "./context/user";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,15 +18,17 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className} style={{ margin: "0px" }}>
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "row",
-          }}
-        >
-          <NavBar />
-          {children}
-        </div>
+        <UserContextProvider>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+            }}
+          >
+            <NavBar />
+            {children}
+          </div>
+        </UserContextProvider>
       </body>
     </html>
   );
