@@ -1,59 +1,117 @@
-// import React from 'react';
-// import Link from 'next/link';
-
-// export default function Post({ post }) {
-//   const containerStyle = {
-//     marginTop: '50px',
-//     textAlign: 'center',
-//   };
-
-//   return (
-//     <>
-//       <form style={containerStyle}></form>
-
-//         {post ? (
-//           <>
-//             <h1 style={{ textAlign: 'center' }}>{post.id}</h1>
-//             <h2>{post.title}</h2>
-//             <p>{post.content}</p>
-//             <p>작성자: {post.writer}</p>
-//           </>
-//         ) : (
-//           <p>Loading...</p>
-//         )}
-
-//     </>
-//   );
-// }
-
-// export async function getServerSideProps(context) {
-
-//   const apiUrl = '실제 URL 입력'; //백엔드에 URL 쏘면 json형식으로 게시글 정보 받아올 것이라 예상.
-
-//   try {
-//     const response = await fetch(apiUrl);
-//     if (response.status !== 200) {
-//       throw new Error('데이터 가져오기 실패');
-//     }
-//     const data = await response.json();
-
-//     return {
-//       props: {
-//         post: data,
-//       },
-//     };
-//   } catch (error) {
-//     console.error('API 호출 중 오류 발생:', error);
-
-//     return {
-//       props: {
-//         post: null, // 오류 처리를 위해 post를 null로 설정합니다.
-//       },
-//     };
-//   }
-// }
+"use client";
+import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import { Button } from '@mui/material';
+import axios from "axios";
+import Cookies from "js-cookie";
+import {useState} from 'react';
 
 export default function Page({ params }: { params: { id: number } }) {
-  console.log(params);
-  return <div>My Post: {params.id}</div>;
+  const posts = 
+    //임시 포스트.
+    {
+      id: 1,
+      title: "12월에 미국 감",
+      content: "이것은 첫 번째 게시물의 내용입니다.",
+      writer: "kim",
+    };
+
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedTitle, setEditedTitle] = useState(posts.title);
+  const [editedContent, setEditedContent] = useState(posts.content);
+
+  function getCookieValue(cookieName: string) {
+    const cookieValue = Cookies.get(cookieName);
+    return cookieValue || "";
+  }
+
+  const handleDeletePush = () => { //게시글 삭제
+    axios.delete("delete url"+ `/${posts.id}`, {
+      headers:{
+        token: getCookieValue("jwtAuthToken"),
+      }
+    })
+  };
+
+  const handleModify = () => {
+    setIsEditing(true);
+  }
+
+  const handleModifyPush = () => { //게시글 수정
+    axios.put("modify url" + `/${posts.id}`, {
+        headers: {
+          token: getCookieValue("jwtAuthToken"),
+        },
+        posts: {
+          title: posts.title,
+          content: posts.content,
+          writer: posts.writer
+        }
+      }
+    )
+    .then((response) =>{
+      setIsEditing(false);
+      window.location.reload();
+    })
+    .catch((error) => {
+      console.log(error);
+    })
+  }
+  
+
+  const containerStyle: React.CSSProperties = {
+    width: '500px',
+    height: '400px',
+    margin: '0 auto',
+    marginTop: '35vh', // 수직 가운데 정렬
+    transform: 'translateY(-50%)', // 박스를 수직으로 중앙 정렬
+    padding: '20px',
+    border: '1px solid #ccc',
+    textAlign: 'center',
+    backgroundColor: '#f9f9f9',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
+  };
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', margin: '0 auto' }}>
+      <h1 style={{ textAlign: 'center', marginTop: '5vh' }}>
+        {isEditing ? (
+          <input
+            type="text"
+            value={editedTitle}
+            onChange={(e) => setEditedTitle(e.target.value)}
+          />
+        ) : (
+          posts.title
+        )}
+      </h1>
+      <div style={containerStyle}>
+        {isEditing ? (
+          <textarea
+            value={editedContent}
+            onChange={(e) => setEditedContent(e.target.value)}
+          />
+        ) : (
+          posts.content
+        )}
+      </div>
+      {isEditing ? (
+        <Button onClick={handleModifyPush} variant="contained">
+          저장
+        </Button>
+      ) : (
+        <>
+          <Button onClick={handleModify} variant="contained">
+            수정
+          </Button>
+          <Button onClick={handleDeletePush} variant="contained">
+            삭제
+          </Button>
+        </>
+      )}
+    </div>
+  );
 }

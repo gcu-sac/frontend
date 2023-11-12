@@ -2,6 +2,7 @@
 
 import React from "react";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import Link from 'next/link';
 
 const CommunityPage = () => {
   const posts = [
@@ -20,11 +21,20 @@ const CommunityPage = () => {
     },
     // 다른 게시물 추가
   ];
-
+  
   const columns: GridColDef[] = [
-    { field: "id", headerName: "번호", width: 100 },
-    { field: "title", headerName: "제목", width: 300 },
-    { field: "writer", headerName: "작성자", width: 150 },
+    { field: 'id', headerName: '번호', width: 100 },
+    {
+      field: 'title',
+      headerName: '제목',
+      width: 300,
+      renderCell: (params) => (
+        <Link href={`/article/${params.row.id}`} style={{ color: 'black', textDecoration: 'none' }} passHref>
+          <div>{params.value}</div>
+        </Link>
+      ),
+    },
+    { field: 'writer', headerName: '작성자', width: 150 },
   ];
 
   return (
@@ -45,5 +55,4 @@ const CommunityPage = () => {
     </div>
   );
 };
-
 export default CommunityPage;
