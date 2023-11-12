@@ -20,7 +20,7 @@ export const UserContextProvider = ({ children }: { children: ReactNode }) => {
   );
 
   useEffect(() => {
-    axios.get(`${BASE_URL_AUTH}/user/id/${user.id}`).then((res) => {
+    axios.get(`${BASE_URL_AUTH}`).then((res) => {
       setUser(res.data);
     });
   }, [userToken]);
