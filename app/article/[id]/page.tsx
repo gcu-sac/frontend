@@ -98,6 +98,7 @@ export default function Page({ params }: { params: { id: number } }) {
           posts.content
         )}
       </div>
+      
       {isEditing ? (
         <Button onClick={handleModifyPush} variant="contained">
           저장
@@ -111,7 +112,9 @@ export default function Page({ params }: { params: { id: number } }) {
             삭제
           </Button>
         </>
+        
       )}
+      
     </div>
   );
 }

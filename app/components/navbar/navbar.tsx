@@ -6,7 +6,7 @@ import userImage from "../../public/user-profile.png";
 import UserIcon from "../user-icon/user-icon";
 import { useContext } from "react";
 import Cookies from 'js-cookie';
-import { Button } from "@mui/material";
+import Button from "@mui/material/Button";
 
 const NavBar = () => {
 
@@ -46,9 +46,7 @@ const NavBar = () => {
                 text={user.nickname}
                 variant="contained"
               />
-              <button onClick={handleLogout} className="contained" >
-                LOGOUT
-              </button>
+              <Button onClick={handleLogout} className="contained">LOGOUT</Button>
               
             </>
           ) : (
