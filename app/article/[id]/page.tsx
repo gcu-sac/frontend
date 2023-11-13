@@ -47,16 +47,8 @@ export default function Page({ params }: { params: { id: number } }) {
 
   const handleModifyPush = () => { //게시글 수정
     axios.put(`${BASE_URL_COMMUNITY}/article/${posts.idx}`, {
-        headers: {
-          token: getCookieValue("jwtAuthToken"),
-        },
-        posts: {
-          idx: posts.idx,
-          name: posts.name,
-          title: posts.title,
-          content: posts.content,
-          date: posts.date,
-        }
+      title: posts.title,
+      content: posts.content,
       }
     )
     .then((response) =>{
