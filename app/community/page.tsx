@@ -57,8 +57,13 @@ const CommunityPage = () => {
     axios.get(`${BASE_URL_COMMUNITY}/article`)
     .then((response) => {
       // 요청 성공 시
-      console.log("get successfully:", response.data);
-      setPosts(response.data.articles);
+      // console.log("get successfully:", response.data);
+      // setPosts(response.data.articles);
+      const modifiedData = response.data.articles.map((item: any) => ({
+        ...item,
+        id: item.idx // idx를 id로 사용
+      }));
+      setPosts(modifiedData);
     })
     .catch((error) => {
       console.error("Error editing event:", error);
@@ -66,13 +71,13 @@ const CommunityPage = () => {
   };
   
   const columns: GridColDef[] = [
-    { field: 'idx', headerName: '번호', width: 100 },
+    { field: 'id', headerName: '번호', width: 100 },
     {
       field: 'title',
       headerName: '제목',
       width: 300,
       renderCell: (params) => (
-        <Link href={`/article/${params.row.idx}`} style={{ color: 'black', textDecoration: 'none' }} passHref>
+        <Link href={`/article/${params.row.id}`} style={{ color: 'black', textDecoration: 'none' }} passHref>
           <div>{params.value}</div>
         </Link>
       ),
