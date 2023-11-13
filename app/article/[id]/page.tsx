@@ -1,9 +1,10 @@
 "use client";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import { Button } from '@mui/material';
+import Button from "@mui/material/Button";
 import axios from "axios";
 import Cookies from "js-cookie";
 import {useState} from 'react';
+import { TextField } from "@mui/material";
 
 export default function Page({ params }: { params: { id: number } }) {
   const posts = 
@@ -62,8 +63,8 @@ export default function Page({ params }: { params: { id: number } }) {
     width: '500px',
     height: '400px',
     margin: '0 auto',
-    marginTop: '35vh', // 수직 가운데 정렬
-    transform: 'translateY(-50%)', // 박스를 수직으로 중앙 정렬
+    // marginTop: '35vh', // 수직 가운데 정렬
+    // transform: 'translateY(-50%)', // 박스를 수직으로 중앙 정렬
     padding: '20px',
     border: '1px solid #ccc',
     textAlign: 'center',
@@ -76,11 +77,13 @@ export default function Page({ params }: { params: { id: number } }) {
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', margin: '0 auto' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', justifyContent: "space-around", margin: '0 auto' }}>
       <h1 style={{ textAlign: 'center', marginTop: '5vh' }}>
         {isEditing ? (
-          <input
+          <TextField
             type="text"
+            multiline
+            InputProps={{ style: { fontSize: 30 } }}
             value={editedTitle}
             onChange={(e) => setEditedTitle(e.target.value)}
           />
@@ -90,31 +93,32 @@ export default function Page({ params }: { params: { id: number } }) {
       </h1>
       <div style={containerStyle}>
         {isEditing ? (
-          <textarea
+          <TextField
             value={editedContent}
+            multiline
             onChange={(e) => setEditedContent(e.target.value)}
           />
         ) : (
           posts.content
         )}
+        
       </div>
-      
-      {isEditing ? (
-        <Button onClick={handleModifyPush} variant="contained">
-          저장
-        </Button>
-      ) : (
-        <>
-          <Button onClick={handleModify} variant="contained">
+      {isEditing && ( // 수정 모드인 경우에만 '저장' 버튼 보이기
+          <Button onClick={handleModifyPush} variant="text">
+            저장
+          </Button>
+        )}
+      {!isEditing && ( // 수정 모드가 아닌 경우에만 버튼 보이기
+        <div style={{ textAlign: 'center', marginTop: '2px' }}>
+          <Button onClick={handleModify} variant="text" style={{ marginRight: '5px' }}>
             수정
           </Button>
-          <Button onClick={handleDeletePush} variant="contained">
+          <Button onClick={handleDeletePush} variant="text">
             삭제
           </Button>
-        </>
-        
+        </div>
       )}
-      
     </div>
   );
+  
 }

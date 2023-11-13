@@ -262,7 +262,7 @@ const CalendarComponent = () => {
       const endpoint = calendar_event_link + `?month=${month}&year=${year}`; //월 마다의 일정을 받아옴
       const response = await axios.get(endpoint, {
         headers: {
-          token: getCookieValue("jwtAuthToken"),
+          userId: getCookieValue("username"),
         },
       });
       setData(response.data);
