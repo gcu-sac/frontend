@@ -5,6 +5,7 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import {useState} from 'react';
 import { TextField } from "@mui/material";
+import { BASE_URL_COMMUNITY } from "@/app/links";
 
 export default function Page({ params }: { params: { id: number } }) {
   const posts = 
@@ -26,10 +27,16 @@ export default function Page({ params }: { params: { id: number } }) {
   }
 
   const handleDeletePush = () => { //게시글 삭제
-    axios.delete("delete url"+ `/${posts.id}`, {
+    axios.delete(`${BASE_URL_COMMUNITY}/article/${posts.id}`, {
       headers:{
         token: getCookieValue("jwtAuthToken"),
       }
+    })
+    .then((response) =>{
+      window.location.reload();
+    })
+    .catch((error) => {
+      console.log(error);
     })
   };
 
@@ -38,7 +45,7 @@ export default function Page({ params }: { params: { id: number } }) {
   }
 
   const handleModifyPush = () => { //게시글 수정
-    axios.put("modify url" + `/${posts.id}`, {
+    axios.put(`${BASE_URL_COMMUNITY}/article/${posts.id}`, {
         headers: {
           token: getCookieValue("jwtAuthToken"),
         },
