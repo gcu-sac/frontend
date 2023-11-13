@@ -69,6 +69,7 @@ const CommunityPage = () => {
     .then((response) => {
       // 요청 성공 시
       console.log("get successfully:", response.data);
+      setPosts(response.data);
     })
     .catch((error) => {
       console.error("Error editing event:", error);
