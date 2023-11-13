@@ -31,7 +31,7 @@ const CommunityPage = () => {
 
   const handleSavePost = () => { //새 게시글 추가 요청
     
-    axios.post(`${BASE_URL_COMMUNITY}/article/`, {
+    axios.post(`${BASE_URL_COMMUNITY}/article`, {
       name: getCookieValue("username"),
       title: newPostTitle,
       content: newPostContent
@@ -54,7 +54,7 @@ const CommunityPage = () => {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get(`${BASE_URL_COMMUNITY}/article/`); //처음 실행시 모든 게시글을 불러옴.
+      const response = await axios.get(`${BASE_URL_COMMUNITY}/article`); //처음 실행시 모든 게시글을 불러옴.
       setPosts(response.data);
     } catch (error) {
       console.error("Error fetching data:", error);
