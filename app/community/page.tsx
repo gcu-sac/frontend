@@ -69,7 +69,6 @@ const CommunityPage = () => {
     .then((response) => {
       // 요청 성공 시
       console.log("get successfully:", response.data);
-      fetchData(); 
     })
     .catch((error) => {
       console.error("Error editing event:", error);
