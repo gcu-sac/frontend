@@ -34,7 +34,8 @@ export default function Page({ params }: { params: { id: number } }) {
       }
     })
     .then((response) =>{
-      window.location.reload();
+      console.log("삭제 성공");
+      window.location.href = "../../community";
     })
     .catch((error) => {
       console.log(error);
