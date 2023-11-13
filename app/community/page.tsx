@@ -50,10 +50,11 @@ const CommunityPage = () => {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  });
 
   const fetchData = async () => {
     try {
+      console.log("테스트")
       const response = await axios.get(`${BASE_URL_COMMUNITY}/article`); //처음 실행시 모든 게시글을 불러옴.
       setPosts(response.data);
     } catch (error) {
