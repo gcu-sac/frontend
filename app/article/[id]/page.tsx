@@ -13,6 +13,8 @@ export default function Page({ params }: { params: { id: number } }) {
     return cookieValue || "";
   }
 
+  const loggedInUserId = getCookieValue("username");
+
   const [posts, setPosts] = useState({ //특정 게시글의 내용물이 담김
     idx: 0,
     name: "",
@@ -92,6 +94,8 @@ export default function Page({ params }: { params: { id: number } }) {
     // boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
   };
 
+  const isAuthor = loggedInUserId === posts.name; //로그인 유저와 게시글 글쓴 유저가 같은지 판별
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', justifyContent: "space-around", margin: '0 auto' }}>
       <h1 style={{ textAlign: 'center', marginTop: '5vh' }}>
@@ -126,7 +130,7 @@ export default function Page({ params }: { params: { id: number } }) {
             저장
           </Button>
         )}
-      {!isEditing && ( // 수정 모드가 아닌 경우에만 버튼 보이기
+      {!isEditing && isAuthor && ( // 수정 모드가 아닌 경우, 글쓴이와 로그인 유저가 같은 경우에만 수정, 삭제 버튼 보이게.
         <div style={{ textAlign: 'center', marginTop: '2px' }}>
           <Button onClick={handleModify} variant="text" style={{ marginRight: '5px' }}>
             수정
