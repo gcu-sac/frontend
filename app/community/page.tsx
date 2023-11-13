@@ -50,16 +50,30 @@ const CommunityPage = () => {
 
   useEffect(() => {
     fetchData();
-  });
+  }, []);
 
+  // const fetchData = async () => {
+  //   try {
+  //     console.log("테스트")
+  //     const response = await axios.get(`${BASE_URL_COMMUNITY}/article`); //처음 실행시 모든 게시글을 불러옴.
+  //     console.log(response.data);
+  //     setPosts(response.data);
+      
+  //   } catch (error) {
+  //     console.error("Error fetching data:", error);
+  //   }
+  // };
   const fetchData = async () => {
-    try {
-      console.log("테스트")
-      const response = await axios.get(`${BASE_URL_COMMUNITY}/article`); //처음 실행시 모든 게시글을 불러옴.
-      setPosts(response.data);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
+    console.log("요청test")
+    axios.get(`${BASE_URL_COMMUNITY}/article`)
+    .then((response) => {
+      // 요청 성공 시
+      console.log("get successfully:", response.data);
+      fetchData(); 
+    })
+    .catch((error) => {
+      console.error("Error editing event:", error);
+    });
   };
   
   const columns: GridColDef[] = [
