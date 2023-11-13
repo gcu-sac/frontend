@@ -119,7 +119,7 @@ const CalendarComponent = () => {
     console.log("schedule: ", schedule);
     console.log("editEvent: ", editEvent);
     axios
-      .put(calendar_event_link + `/${editEvent.scheduleId}`, {
+      .put(calendar_event_link, {
         headers: {
           token: editEvent.token,
         },

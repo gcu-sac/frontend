@@ -66,14 +66,14 @@ export default function Page({ params }: { params: { id: number } }) {
     // marginTop: '35vh', // 수직 가운데 정렬
     // transform: 'translateY(-50%)', // 박스를 수직으로 중앙 정렬
     padding: '20px',
-    border: '1px solid #ccc',
+    // border: '1px solid #ccc',
     textAlign: 'center',
-    backgroundColor: '#f9f9f9',
+    // backgroundColor: '#f9f9f9',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
+    // boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
   };
 
   return (
@@ -83,7 +83,7 @@ export default function Page({ params }: { params: { id: number } }) {
           <TextField
             type="text"
             multiline
-            InputProps={{ style: { fontSize: 30 } }}
+            style={{ width: '50%' }}
             value={editedTitle}
             onChange={(e) => setEditedTitle(e.target.value)}
           />
@@ -96,6 +96,8 @@ export default function Page({ params }: { params: { id: number } }) {
           <TextField
             value={editedContent}
             multiline
+            minRows={10}
+            style={{ width: '100%' }}
             onChange={(e) => setEditedContent(e.target.value)}
           />
         ) : (
