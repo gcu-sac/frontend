@@ -13,7 +13,6 @@ function Page() {
 
   const { user, setUser } = useContext(UserContext);
 
-
   const handleLogin = async () => {
     //로그인 처리를 수행
     try {

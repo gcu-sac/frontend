@@ -3,31 +3,32 @@ import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import Button from "@mui/material/Button";
 import axios from "axios";
 import Cookies from "js-cookie";
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 import { TextField } from "@mui/material";
 import { BASE_URL_COMMUNITY } from "@/app/links";
 
 export default function Page({ params }: { params: { id: number } }) {
-  const posts = 
-    //임시 포스트.
-    {
-      id: 1,
-      title: "12월에 미국 감",
-      content: "이것은 첫 번째 게시물의 내용입니다.",
-      writer: "kim",
-    };
-
-  const [isEditing, setIsEditing] = useState(false);
-  const [editedTitle, setEditedTitle] = useState(posts.title);
-  const [editedContent, setEditedContent] = useState(posts.content);
-
   function getCookieValue(cookieName: string) {
     const cookieValue = Cookies.get(cookieName);
     return cookieValue || "";
   }
 
+  const [posts, setPosts] = useState({ //특정 게시글의 내용물이 담김
+    idx: 0,
+    name: "",
+    title: "",
+    content: "",
+    date: "",
+  });
+
+  const [isEditing, setIsEditing] = useState(false);
+  // const [editedTitle, setEditedTitle] = useState(posts.title);
+  // const [editedContent, setEditedContent] = useState(posts.content);
+
+  
+
   const handleDeletePush = () => { //게시글 삭제
-    axios.delete(`${BASE_URL_COMMUNITY}/article/${posts.id}`, {
+    axios.delete(`${BASE_URL_COMMUNITY}/article/${posts.idx}`, {
       headers:{
         token: getCookieValue("jwtAuthToken"),
       }
@@ -45,14 +46,16 @@ export default function Page({ params }: { params: { id: number } }) {
   }
 
   const handleModifyPush = () => { //게시글 수정
-    axios.put(`${BASE_URL_COMMUNITY}/article/${posts.id}`, {
+    axios.put(`${BASE_URL_COMMUNITY}/article/${posts.idx}`, {
         headers: {
           token: getCookieValue("jwtAuthToken"),
         },
         posts: {
+          idx: posts.idx,
+          name: posts.name,
           title: posts.title,
           content: posts.content,
-          writer: posts.writer
+          date: posts.date,
         }
       }
     )
@@ -64,6 +67,19 @@ export default function Page({ params }: { params: { id: number } }) {
       console.log(error);
     })
   }
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(`${BASE_URL_COMMUNITY}/article/${params.id}`); //처음 실행시 해당 id의 게시글을 불러옴
+      setPosts(response.data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
   
 
   const containerStyle: React.CSSProperties = {
@@ -91,8 +107,8 @@ export default function Page({ params }: { params: { id: number } }) {
             type="text"
             multiline
             style={{ width: '50%' }}
-            value={editedTitle}
-            onChange={(e) => setEditedTitle(e.target.value)}
+            value={posts.title}
+            onChange={(e) => setPosts({...posts, title: e.target.value})}
           />
         ) : (
           posts.title
@@ -101,11 +117,11 @@ export default function Page({ params }: { params: { id: number } }) {
       <div style={containerStyle}>
         {isEditing ? (
           <TextField
-            value={editedContent}
+            value={posts.content}
             multiline
             minRows={10}
             style={{ width: '100%' }}
-            onChange={(e) => setEditedContent(e.target.value)}
+            onChange={(e) => setPosts({...posts, content: e.target.value})}
           />
         ) : (
           posts.content
