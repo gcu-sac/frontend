@@ -74,7 +74,7 @@ function Page() {
       <div>
         <input
           type="text"
-          placeholder="Username"
+          placeholder="ID"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           style={inputStyle}

@@ -6,18 +6,32 @@ import Cookies from "js-cookie";
 import {useState, useEffect} from 'react';
 import { TextField } from "@mui/material";
 import { BASE_URL_COMMUNITY } from "@/app/links";
+import jwt, { JwtPayload } from 'jsonwebtoken';
 
 export default function Page({ params }: { params: { id: number } }) {
   function getCookieValue(cookieName: string) {
     const cookieValue = Cookies.get(cookieName);
     return cookieValue || "";
   }
-
-  const loggedInUserId = getCookieValue("username");
+   // 토큰 복호화 함수
+   const decodeToken = (token: any) => {
+    try {
+      let payload = token.substring(token.indexOf('.')+1,token.lastIndexOf('.'));
+      // Payload의 base64 디코딩
+      const dec = Buffer.from(JSON.stringify(payload), 'utf-8').toString('base64' as BufferEncoding);
+      let decJson = JSON.parse(dec);
+      return decJson;
+    } catch (error) {
+      console.error('토큰 복호화 에러:', error);
+      return null;
+    }
+  };
+  
+  const [nick, setNick] = useState("");
 
   const [posts, setPosts] = useState({ //특정 게시글의 내용물이 담김
     idx: 0,
-    name: "",
+    nick_name: "",
     title: "",
     content: "",
     date: "",
@@ -71,6 +85,15 @@ export default function Page({ params }: { params: { id: number } }) {
     try {
       const response = await axios.get(`${BASE_URL_COMMUNITY}/article/${params.id}`); //처음 실행시 해당 id의 게시글을 불러옴
       setPosts(response.data);
+
+      // 토큰 복호화
+      const decodedToken = decodeToken(getCookieValue('jwtAuthToken'));
+      if (decodedToken && typeof decodedToken === 'object' && 'user' in decodedToken) {
+        setNick(decodedToken.user.nickname);
+      } else {
+        console.error('Invalid or expired token');
+        // handle the case when the token is null or doesn't have the expected structure
+      }
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -94,7 +117,7 @@ export default function Page({ params }: { params: { id: number } }) {
     // boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
   };
 
-  const isAuthor = loggedInUserId === posts.name; //로그인 유저와 게시글 글쓴 유저가 같은지 판별
+  const isAuthor = nick === posts.nick_name; //로그인 유저와 게시글 글쓴 유저가 같은지 판별
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', justifyContent: "space-around", margin: '0 auto' }}>

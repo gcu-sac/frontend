@@ -20,6 +20,22 @@ const CommunityPage = () => {
   const [newPostTitle, setNewPostTitle] = useState("");
   const [newPostContent, setNewPostContent] = useState("");
 
+  // 토큰 복호화 함수
+  const decodeToken = (token: any) => {
+    try {
+      let payload = token.substring(token.indexOf('.')+1,token.lastIndexOf('.'));
+      // Payload의 base64 디코딩
+      const dec = Buffer.from(JSON.stringify(payload), 'utf-8').toString('base64' as BufferEncoding);
+      let decJson = JSON.parse(dec);
+      return decJson;
+    } catch (error) {
+      console.error('토큰 복호화 에러:', error);
+      return null;
+    }
+  };
+  
+  const [nick, setNick] = useState("");
+
   function getCookieValue(cookieName: string) {
     const cookieValue = Cookies.get(cookieName);
     return cookieValue || "";
@@ -57,8 +73,6 @@ const CommunityPage = () => {
     axios.get(`${BASE_URL_COMMUNITY}/article`)
     .then((response) => {
       // 요청 성공 시
-      // console.log("get successfully:", response.data);
-      // setPosts(response.data.articles);
       const modifiedData = response.data.articles.map((item: any) => ({
         ...item,
         id: item.idx // idx를 id로 사용
@@ -99,7 +113,7 @@ const CommunityPage = () => {
         rows={posts}
         columns={columns}
         initialState={{ pagination: { paginationModel: { pageSize: 5 } } }}
-        pageSizeOptions={[5]}
+        pageSizeOptions={[10]}
       ></DataGrid>
 
       <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
