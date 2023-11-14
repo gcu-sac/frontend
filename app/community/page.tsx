@@ -13,6 +13,9 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import TextField from "@mui/material/TextField";
 import Cookies from "js-cookie";
+import UserIcon from "../components/user-icon/user-icon";
+import { useContext } from "react";
+import { UserContext, UserContextProvider } from "@/app/context/user";
 
 const CommunityPage = () => {
   const [posts, setPosts] = useState([]);
@@ -20,21 +23,7 @@ const CommunityPage = () => {
   const [newPostTitle, setNewPostTitle] = useState("");
   const [newPostContent, setNewPostContent] = useState("");
 
-  // // 토큰 복호화 함수
-  // const decodeToken = (token: any) => {
-  //   try {
-  //     let payload = token.substring(token.indexOf('.')+1,token.lastIndexOf('.'));
-  //     // Payload의 base64 디코딩
-  //     const dec = Buffer.from(JSON.stringify(payload), 'utf-8').toString('base64' as BufferEncoding);
-  //     let decJson = JSON.parse(dec);
-  //     return decJson;
-  //   } catch (error) {
-  //     console.error('토큰 복호화 에러:', error);
-  //     return null;
-  //   }
-  // };
-  
-  // const [nick, setNick] = useState("");
+  const { user } = useContext(UserContext);
 
   function getCookieValue(cookieName: string) {
     const cookieValue = Cookies.get(cookieName);
@@ -48,7 +37,7 @@ const CommunityPage = () => {
   const handleSavePost = () => { //새 게시글 추가 요청
     
     axios.post(`${BASE_URL_COMMUNITY}/article`, {
-      name: getCookieValue("username"),
+      name: user.nickname,
       title: newPostTitle,
       content: newPostContent
     }).then((response) => {
@@ -67,6 +56,8 @@ const CommunityPage = () => {
   useEffect(() => {
     fetchData();
   }, []);
+
+  
 
   const fetchData = async () => {
     console.log("요청test")
@@ -96,7 +87,7 @@ const CommunityPage = () => {
         </Link>
       ),
     },
-    { field: 'nick_name', headerName: '작성자', width: 150 },
+    { field: 'name', headerName: '작성자', width: 150 },
   ];
 
   return (
@@ -112,7 +103,7 @@ const CommunityPage = () => {
       <DataGrid
         rows={posts}
         columns={columns}
-        initialState={{ pagination: { paginationModel: { pageSize: 5 } } }}
+        initialState={{ pagination: { paginationModel: { pageSize: 10 } } }}
         pageSizeOptions={[10]}
       ></DataGrid>
 

@@ -6,7 +6,6 @@ import Cookies from "js-cookie";
 import {useState, useEffect} from 'react';
 import { TextField } from "@mui/material";
 import { BASE_URL_COMMUNITY } from "@/app/links";
-import jwt, { JwtPayload } from 'jsonwebtoken';
 
 export default function Page({ params }: { params: { id: number } }) {
   function getCookieValue(cookieName: string) {
@@ -31,7 +30,7 @@ export default function Page({ params }: { params: { id: number } }) {
 
   const [posts, setPosts] = useState({ //특정 게시글의 내용물이 담김
     idx: 0,
-    nick_name: "",
+    name: "",
     title: "",
     content: "",
     date: "",
@@ -117,7 +116,7 @@ export default function Page({ params }: { params: { id: number } }) {
     // boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
   };
 
-  const isAuthor = nick === posts.nick_name; //로그인 유저와 게시글 글쓴 유저가 같은지 판별
+  const isAuthor = nick === posts.name; //로그인 유저와 게시글 글쓴 유저가 같은지 판별
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', justifyContent: "space-around", margin: '0 auto' }}>
