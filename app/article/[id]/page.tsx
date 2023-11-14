@@ -96,6 +96,22 @@ export default function Page({ params }: { params: { id: number } }) {
     justifyContent: 'center',
     // boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
   };
+  const containerStyle2: React.CSSProperties = {
+    width: '500px',
+    height: '400px',
+    margin: '0 auto',
+    // marginTop: '35vh', // 수직 가운데 정렬
+    // transform: 'translateY(-50%)', // 박스를 수직으로 중앙 정렬
+    padding: '20px',
+    border: '1px solid #ccc',
+    textAlign: 'center',
+    backgroundColor: '#f9f9f9',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
+  };
 
   const isAuthor = user.nickname === posts.name; //로그인 유저와 게시글 글쓴 유저가 같은지 판별
 
@@ -114,7 +130,7 @@ export default function Page({ params }: { params: { id: number } }) {
           posts.title
         )}
       </h1>
-      <div style={containerStyle}>
+      <div style={containerStyle2}>
         {isEditing ? (
           <TextField
             value={posts.content}
