@@ -101,6 +101,7 @@ const CommunityPage = () => {
       <h1 style={{ textAlign: "center" }}>게시글 목록</h1>
       <Button onClick={handleAddPost}>게시글 추가</Button>
       <DataGrid
+        style={{height: "fit-content"}}
         rows={posts}
         columns={columns}
         initialState={{ pagination: { paginationModel: { pageSize: 10 } } }}
