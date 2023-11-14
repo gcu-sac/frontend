@@ -20,21 +20,21 @@ const CommunityPage = () => {
   const [newPostTitle, setNewPostTitle] = useState("");
   const [newPostContent, setNewPostContent] = useState("");
 
-  // 토큰 복호화 함수
-  const decodeToken = (token: any) => {
-    try {
-      let payload = token.substring(token.indexOf('.')+1,token.lastIndexOf('.'));
-      // Payload의 base64 디코딩
-      const dec = Buffer.from(JSON.stringify(payload), 'utf-8').toString('base64' as BufferEncoding);
-      let decJson = JSON.parse(dec);
-      return decJson;
-    } catch (error) {
-      console.error('토큰 복호화 에러:', error);
-      return null;
-    }
-  };
+  // // 토큰 복호화 함수
+  // const decodeToken = (token: any) => {
+  //   try {
+  //     let payload = token.substring(token.indexOf('.')+1,token.lastIndexOf('.'));
+  //     // Payload의 base64 디코딩
+  //     const dec = Buffer.from(JSON.stringify(payload), 'utf-8').toString('base64' as BufferEncoding);
+  //     let decJson = JSON.parse(dec);
+  //     return decJson;
+  //   } catch (error) {
+  //     console.error('토큰 복호화 에러:', error);
+  //     return null;
+  //   }
+  // };
   
-  const [nick, setNick] = useState("");
+  // const [nick, setNick] = useState("");
 
   function getCookieValue(cookieName: string) {
     const cookieValue = Cookies.get(cookieName);
@@ -96,7 +96,7 @@ const CommunityPage = () => {
         </Link>
       ),
     },
-    { field: 'name', headerName: '작성자', width: 150 },
+    { field: 'nick_name', headerName: '작성자', width: 150 },
   ];
 
   return (
